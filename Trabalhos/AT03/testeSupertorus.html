@@ -1,0 +1,222 @@
+
+r <input type="text" size="4" name="r" id="r" value="2.0">
+t <input type="text" size="4" name="t" id="t" value="2.5">
+A <input type="text" size="4" name="A" id="A" value="3">
+B <input type="text" size="4" name="B" id="B" value="3">
+C <input type="text" size="4" name="C" id="C" value="4">
+
+
+ <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset = utf-8 >
+        <title>Computação Gráfica - 2017.1</title>
+        <style>
+            body{margin:0;}
+            canvas{width: 100%; height: 100%;}
+        </style>
+        </head>
+        <body>
+       
+
+       
+               
+        </body>
+<!-- <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script> -->
+<script type="text/javascript" src="../libs/three.js"></script>
+<script src="http://threejs.org/examples/js/controls/TrackballControls.js"> </script>
+       
+
+<script>
+
+// A super ellipse
+var controls, scene, camera, box, spline, counter = 0;
+
+var tangent = new THREE.Vector3();
+var axis = new THREE.Vector3();
+var up = new THREE.Vector3( 1, 0, 0 );
+var uslice = 30;    // number of slices (fatias)
+var vslice = 5;     // number of stacks (pilhas)
+var sg1, sg2, sg3, sg4, sg5, sg6;
+// parameter for the super ellipse these give  Piet Hein's superegg.
+var r = 2, t = 2.5, A = B = 3, C = 4;
+
+var r0 = 1.0, r1 = 0.25, n1 = 3, n2 = 3;
+
+var teste = 1;
+
+function init() {
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+    camera.position.set(10, 10, 10);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    scene = new THREE.Scene();
+    controls = new THREE.TrackballControls(camera, render.domElement);
+
+    //scene.add( new THREE.AmbientLight( 0x111111 ) );
+    //var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.125 );
+	//directionalLight.position.x = Math.random() - 0.5;
+	//directionalLight.position.y = Math.random() - 0.5;
+	//directionalLight.position.z = Math.random() - 0.5;
+    //directionalLight.position.normalize();
+    //scene.add( directionalLight );
+
+    var material = new THREE.MeshNormalMaterial( { side: THREE.DoubleSide } ) ;
+/*    var wirematerial = new THREE.MeshBasicMaterial( { 
+        color: 0x666666, wireframe: true, polygonOffset: true,     
+        polygonOffsetFactor: 1.0, polygonOffsetUnits: 1.0 } ) ;
+ */   
+    scene.add( new THREE.AxisHelper( 10 ) );
+
+    sg1 =  new THREE.ParametricGeometry(sf1, uslice, vslice);
+    sg2 =  new THREE.ParametricGeometry(sf2, uslice, vslice);
+    sg3 =  new THREE.ParametricGeometry(sf3, uslice, vslice);
+    sg4 =  new THREE.ParametricGeometry(sf4, uslice, vslice);
+    sg5 =  new THREE.ParametricGeometry(sf5, uslice, vslice);
+    sg6 =  new THREE.ParametricGeometry(sf6, uslice, vslice);
+  
+    sm1 = new THREE.Mesh(sg1, material );
+    sm2 = new THREE.Mesh(sg2, material );
+    sm3 = new THREE.Mesh(sg3, material );
+    sm4 = new THREE.Mesh(sg4, material );
+    sm5 = new THREE.Mesh(sg5, material );
+    sm6 = new THREE.Mesh(sg6, material );
+    
+	scene.add( sm1 );
+    scene.add( sm2 );
+	scene.add( sm3 );
+	scene.add( sm4 );
+	scene.add( sm5 );
+	scene.add( sm6 );
+
+    //w1 = new THREE.Mesh( sg1, wirematerial );
+	//scene.add( w1 );
+
+    animate();
+}
+
+function sign(x) {
+    x = +x // convert to a number
+    if (x === 0 || isNaN(x))
+        return x
+    return x > 0 ? 1 : -1
+}
+
+function auxC(w, m) {
+    var c = Math.cos(w);
+    return sign(c) * Math.pow(Math.abs(c), m);
+}
+
+function auxS(w, m) {
+    var s = Math.sin(w);
+    return sign(s) * Math.pow(Math.abs(s), m);
+}
+
+// Given a point on a sphere find the corresponding point on the super-ellipsoid
+function SEvec(x, y, z) {
+//    var th = Math.atan2(y, x);
+//    var phi = Math.asin(z);
+//    var xx = A * auxC(phi, 3) * auxC(th, 2);
+//    var yy = B * auxC(phi, 3) * auxS(th, 2);
+//    var zz = C * auxS(phi, 3);
+//    return new THREE.Vector3(xx, yy, zz);
+
+    var th = Math.atan2(y, x);
+    var phi = Math.asin(z);
+    var X = auxC(th, n1) * (r0 + r1 * auxC(phi, n2));
+    var Y = auxS(th, n1) * (r0 + r1 * auxC(phi, n2));
+    var Z = r1 * auxS(phi, n2);
+    return new THREE.Vector3(X, Y, Z);
+}
+
+// Generate points for the first face
+function sf1(u, v) {
+    var x = 1 - 2*u;
+    var y = 2*v - 1;
+    var z = 1;
+    var l = Math.sqrt(x*x + y*y + z*z);
+    return SEvec( x/l, y/l, z/l);
+}
+
+// second face
+function sf2(u, v) {
+    var x = 2*u - 1;
+    var y = 2*v - 1;
+    var z = -1;
+    var l = Math.sqrt(x*x + y*y + z*z);
+    return SEvec( x/l, y/l, z/l);
+}
+function sf3(u, v) {
+    var x = 2*u - 1;
+    var z = 2*v - 1;
+    var y = 1;
+    var l = Math.sqrt(x*x + y*y + z*z);
+    return SEvec( x/l, y/l, z/l);
+}
+function sf4(u, v) {
+    var x = 1 - 2*u;
+    var z = 2*v - 1;
+    var y = -1;
+    var l = Math.sqrt(x*x + y*y +z *z);
+    return SEvec( x/l, y/l, z/l);
+}
+function sf5(u, v) {
+    var z = 1 - 2*u;
+    var y = 1 - 2*v;
+    var x = 1;
+    var l = Math.sqrt(x*x + y*y + z*z);
+    return SEvec( x/l, y/l, z/l);
+}
+function sf6(u, v) {
+    var z = 1 - 2*u;
+    var y = 2*v - 1;
+    var x = -1;
+    var l = Math.sqrt(x*x + y*y + z*z);
+    return SEvec( x/l, y/l, z/l);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    render();
+}                                    
+
+function render() {
+    controls.update();
+    renderer.render(scene, camera);
+}
+/*
+function reCalc() {
+    r = 2;//$('#r').val();
+    t = 2.5;//$('#t').val();
+    A = 3;//$('#A').val();
+    B = 3;//$('#B').val();
+    C = 4;//$('#C').val();
+    console.log(r, t, A, B,C);
+    var pos=0;
+    for(var v = 0; v <= vslice; ++v) {
+        for(var u = 0; u <= uslice; ++u) {
+            sg1.vertices[pos] = sf1(u/uslice, v/vslice);
+            sg2.vertices[pos] = sf2(u/uslice, v/vslice);
+            sg3.vertices[pos] = sf3(u/uslice, v/vslice);
+            sg4.vertices[pos] = sf4(u/uslice, v/vslice);
+            sg5.vertices[pos] = sf5(u/uslice, v/vslice);
+            sg6.vertices[pos] = sf6(u/uslice, v/vslice);
+            ++pos;
+        }
+    }
+    sg1.verticesNeedUpdate = true;
+    sg2.verticesNeedUpdate = true;
+    sg3.verticesNeedUpdate = true;
+    sg4.verticesNeedUpdate = true;
+    sg5.verticesNeedUpdate = true;
+    sg6.verticesNeedUpdate = true;
+}
+*/
+init();
+
+
+
+</script>
+        </html>
