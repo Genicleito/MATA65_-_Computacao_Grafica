@@ -1,11 +1,3 @@
-<!--
-r <input type="text" size="4" name="r" id="r" value="2.0">
-t <input type="text" size="4" name="t" id="t" value="2.5">
-A <input type="text" size="4" name="A" id="A" value="3">
-B <input type="text" size="4" name="B" id="B" value="3">
-C <input type="text" size="4" name="C" id="C" value="4">
--->
-
  <!DOCTYPE html>
         <html>
         <head>
@@ -24,6 +16,7 @@ C <input type="text" size="4" name="C" id="C" value="4">
         </body>
 <!-- <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script> -->
 <script type="text/javascript" src="../libs/three.js"></script>
+<script type="text/javascript" src="../libs/examples/js/controls/OrbitControls.js"></script>
 <!-- <script src="http://threejs.org/examples/js/controls/TrackballControls.js"> </script> -->
        
 
@@ -31,6 +24,7 @@ C <input type="text" size="4" name="C" id="C" value="4">
 
 // A super ellipse
 var controls, scene, camera, box, spline, counter = 0;
+var orbitControls = null;
 
 var tangent = new THREE.Vector3();
 var axis = new THREE.Vector3();
@@ -60,16 +54,21 @@ var superEllipsoidTriangleMesh3 = null;
 var n1_superTorus = 0.2, n2_superTorus = 0.2;
 var n1_superEllipse = 3, n2_superEllipse = 2;
 
+var clock;
+
 function init() {
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+    camera = new THREE.PerspectiveCamera( 45.0, window.innerWidth/window.innerHeight, 0.1, 1000.0 );
     //camera.position.set(10, 10, 10);
-    camera.position.set(0, -8, 40);
+    camera.position.set(0, 0, 50);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     scene = new THREE.Scene();
     //controls = new THREE.TrackballControls(camera, render.domElement);
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.autorotate = true;
+    clock = new THREE.Clock();
 
     //scene.add( new THREE.AmbientLight( 0x111111 ) );
     //var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.125 );
@@ -85,7 +84,7 @@ function init() {
         color: 0x666666, wireframe: true, polygonOffset: true,     
         polygonOffsetFactor: 1.0, polygonOffsetUnits: 1.0 } ) ;
  */   
-    //scene.add( new THREE.AxisHelper( 10 ) );
+    scene.add( new THREE.AxisHelper( 10 ) );
 
     groupTorus = new THREE.Object3D();
     groupEllipsoid = new THREE.Object3D();
@@ -162,8 +161,17 @@ var velXEllipse = 0;
 var velYEllipse = 0;
 var velZEllipse = 0;
 var velocidadeEllipse = 0;
+var cont = 0;
 
 function render() {
+
+    camera.position.set(Math.cos(cont) * 50, 3, Math.sin(cont) * 50);
+    cont += 0.01;
+
+    var delta = clock.getDelta();
+    controls.update(delta);
+    //controls.update();
+
     var m = new THREE.Matrix4();
     count += 0.04;
 
@@ -243,6 +251,8 @@ function render() {
     superEllipsoidTriangleMesh1.rotateOnAxis(new THREE.Vector3(1.0, 0.0, 0.0).normalize(), 0.01);
     superEllipsoidTriangleMesh2.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 1.0).normalize(), 0.01);
     superEllipsoidTriangleMesh3.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0.0).normalize(), 0.02);
+
+    controls.update();
 
     renderer.render(scene, camera);
     
