@@ -506,38 +506,4 @@ function sf6(u, v) {
 function animate() {
     requestAnimationFrame(animate);
     render();
-}                                    
-/*
-function render() {
-    controls.update();
-    renderer.render(scene, camera);
 }
-*/
-/*
-function reCalc() {
-    r = 2;//$('#r').val();
-    t = 2.5;//$('#t').val();
-    A = 3;//$('#A').val();
-    B = 3;//$('#B').val();
-    C = 4;//$('#C').val();
-    console.log(r, t, A, B,C);
-    var pos=0;
-    for(var v = 0; v <= vslice; ++v) {
-        for(var u = 0; u <= uslice; ++u) {
-            sg1.vertices[pos] = sf1(u/uslice, v/vslice);
-            sg2.vertices[pos] = sf2(u/uslice, v/vslice);
-            sg3.vertices[pos] = sf3(u/uslice, v/vslice);
-            sg4.vertices[pos] = sf4(u/uslice, v/vslice);
-            sg5.vertices[pos] = sf5(u/uslice, v/vslice);
-            sg6.vertices[pos] = sf6(u/uslice, v/vslice);
-            ++pos;
-        }
-    }
-    sg1.verticesNeedUpdate = true;
-    sg2.verticesNeedUpdate = true;
-    sg3.verticesNeedUpdate = true;
-    sg4.verticesNeedUpdate = true;
-    sg5.verticesNeedUpdate = true;
-    sg6.verticesNeedUpdate = true;
-}
-*/
