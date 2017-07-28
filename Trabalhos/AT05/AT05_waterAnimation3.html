@@ -1,0 +1,145 @@
+<html>
+	
+	<head>
+		<title>MATA65 - Computacao Grafica</title>
+		<h1>AT05 - Water Animation.</h1>
+		<h3>Genicleito C. B. Goncalves</h3>
+		<a href="AT05_waterAnimation.html">Mar calmo</a>
+		<a href="AT05_waterAnimation2.html">Mar agitado</a>
+		<!-- <a href="AT05_waterAnimation3.html">Mar muito agitado</a> -->
+		Mar muito agitado
+	</head>
+	
+	<script id="noLight-vs" type="x-shader/x-vertex">
+		void main(void) {
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+		}
+	</script>
+	
+	<script id="noLight-fs" type="x-shader/x-fragment">
+		precision mediump float;
+		void main(void) {	
+			gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+		}
+	</script>
+
+	<script id="gouraud-vs" type="x-shader/x-vertex">		
+		 uniform vec3 uLPos; 
+			
+		 varying vec4 vColor; 
+			
+		 void main(void) { 
+		 	vec4 lColor		= vec4(1.0, 1.0, 1.0, 1.0); 
+		 	vec4 matAmb		= vec4(0.2, 0.2, 0.2, 1.0); 
+		 	vec4 matDif 	= vec4(1.0, 0.0, 0.0, 1.0); 
+		 	vec4 matSpec	= vec4(0.0, 1.0, 1.0, 1.0); 
+			
+		 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );  
+			
+		 	vec3 vPosW = (modelMatrix * vec4(position, 1.0)).xyz; 
+			
+		 	vec3 vNormal = normalize(normalMatrix * normal); 
+			
+		 	vec4 ambient = vec4(lColor.rgb * matAmb.rgb, matAmb.a); 
+		
+		 	vec3 vL = normalize(uLPos - vPosW); 
+		 	float teta = max(dot(vL, vNormal), 0.0); 
+					
+		 	vec4 diffuse = vec4(lColor.rgb * matDif.rgb * teta, matDif.a); 
+	
+		 	vec3 vV = normalize(cameraPosition - vPosW); 
+		 	vec3 vR = normalize(reflect(-vL, vNormal)); 
+		 	float omega = max(dot(vV, vR), 0.0); 
+		 	vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,20.0), matSpec.a); 
+			
+		 	vColor = clamp(ambient + diffuse + specular, 0.0, 1.0); 
+		 } 
+
+
+	</script>
+	
+	<script id="gouraud-fs" type="x-shader/x-fragment">
+		precision mediump float;
+		
+		varying vec4 vColor; 	
+		
+		void main(void) {
+			gl_FragColor = vColor;
+			} 	
+	</script>
+
+	<script id="phong-vs" type="x-shader/x-vertex">		
+		varying vec3 vNormal; 
+		varying vec3 vPosW;
+		varying vec3 novoPosition;
+		uniform float contAnimation;
+		
+		void main(void) { 		
+			vPosW = (modelMatrix * vec4(position, 1.0)).xyz; 
+			vNormal = normalize(normalMatrix * normal);
+
+			novoPosition = position;	//2 * 3^2 == (2 * 3)^2
+
+			novoPosition.y = 100.0/2.0 * pow(sin((position.x + contAnimation)/200.0 * 3.14), 7.0)  + 100.0/3.0 * pow(sin((position.x + contAnimation)/200.0 * 3.14), 3.5);		//	1/2 * sin (x)^4 + 1/3 * sin(x)^2
+			novoPosition.y += 70.0/2.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 8.0)  + 70.0/3.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 4.0);
+			// novoPosition.y += 50.0/2.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 2.0);
+			// novoPosition.y += 50.0/2.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 2.0);
+			// novoPosition.y += 50.0/2.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.z + contAnimation)/100.0 * 3.14), 2.0);
+			novoPosition.z += 50.0/2.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 2.0);
+			// novoPosition.x += 50.0/2.0 * pow(sin((position.y + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.y + contAnimation)/100.0 * 3.14), 2.0);
+			//novoPosition.y = 1.0/2.0 * pow(sin(position.x), 6.0) * 50.0 + 1.0/2.0 * pow(sin(position.x), 2.0) * 50.0;
+/*			for (float i = 0.0; i < 5.0; i += 1.0) {
+				novoPosition.y += (5.0 - i) * pow(abs(sin((position.x - 40.0*i))), 20.0);
+			}
+			novoPosition.y /= 5.0;
+		*/
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( novoPosition, 1.0 );
+			} 
+
+
+	</script>
+	
+	<script id="phong-fs" type="x-shader/x-fragment">
+		precision mediump float; 
+		
+		uniform vec3 uLPos; 
+		
+		varying vec3 vNormal; 
+		varying vec3 vPosW;
+		
+		void main(void) {
+		 	vec4 lColor		= vec4(1.0, 1.0, 1.0, 1.0); 
+		 	vec4 matAmb		= vec4(0.2, 0.2, 0.2, 1.0); 
+		 	// vec4 matDif 	= vec4(0.0, 0.0, 1.0, 1.0); 
+		 	// vec4 matSpec	= vec4(1.0, 1.0, 0.0, 1.0); 
+		 	vec4 matDif 	= vec4(0.03, 0.04, 0.6, 1.0); 
+		 	// vec4 matSpec	= vec4(0.5, 1.0, 0.8, 1.0);
+		 	vec4 matSpec	= vec4(0.8, 0.8, 0.0, 1.0);
+		 	
+		 	vec4 ambient = vec4(lColor.rgb * matAmb.rgb, matAmb.a); 
+		
+		 	vec3 vL = normalize(uLPos - vPosW); 
+		 	float teta = max(dot(vL, vNormal), 0.0); 
+					
+		 	vec4 diffuse = vec4(lColor.rgb * matDif.rgb * teta, matDif.a); 
+	
+		 	vec3 vV = normalize(cameraPosition - vPosW); 
+		 	vec3 vR = normalize(reflect(-vL, vNormal)); 
+		 	float omega = max(dot(vV, vR), 0.0); 
+		 	//vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,5.0), matSpec.a); 
+		 	vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,20.0), matSpec.a); 
+			
+		 	gl_FragColor = clamp(ambient + diffuse + specular, 0.0, 1.0); 
+		 	//gl_FragColor = clamp(diffuse + ambient, 0.0, 1.0); 
+			} 	
+	</script>
+
+	<script type="text/javascript" src="../libs/three.js"></script>
+    <script type="text/javascript" src="../libs/examples/js/controls/OrbitControls.js"></script>
+    <script type="text/javascript" src="../libs/examples/js/loaders/OBJLoader.js"></script>
+	<script type="text/javascript" src="AT05_waterAnimation2.js"></script>
+	
+	<body onload="init();">
+		<div id="WebGL-output" ></div>
+	</body>
+</html>

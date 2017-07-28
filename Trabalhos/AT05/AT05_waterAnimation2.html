@@ -4,9 +4,9 @@
 		<title>MATA65 - Computacao Grafica</title>
 		<h1>AT05 - Water Animation.</h1>
 		<h3>Genicleito C. B. Goncalves</h3>
-		<!-- <a href="AT05_waterAnimation.html">Mar calmo</a> -->
-		Mar calmo
-		<a href="AT05_waterAnimation2.html">Mar agitado</a>
+		<a href="AT05_waterAnimation.html">Mar calmo</a>
+		<!-- <a href="AT05_waterAnimation2.html">Mar agitado</a> -->
+		Mar agitado
 		<a href="AT05_waterAnimation3.html">Mar muito agitado</a>
 	</head>
 
@@ -25,13 +25,9 @@
 			novoPosition.y = 50.0/2.0 * pow(sin((position.x + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.x + contAnimation)/100.0 * 3.14), 2.0);		//	1/2 * sin (x)^4 + 1/3 * sin(x)^2
 			novoPosition.y += 50.0/2.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 8.0)  + 50.0/3.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 4.0);
 			novoPosition.z += 50.0/2.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 2.0);
-			novoPosition.x += 50.0/2.0 * pow(sin((position.y + contAnimation/4.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.y + contAnimation/4.0)/100.0 * 3.14), 2.0);
-
-			novoPosition.y /= 4.0;
-		
+			novoPosition.x += 50.0/2.0 * pow(sin((position.y + contAnimation/3.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.y + contAnimation/3.0)/100.0 * 3.14), 2.0);
 			gl_Position = projectionMatrix * modelViewMatrix * vec4( novoPosition, 1.0 );
 			} 
-
 
 	</script>
 	
@@ -60,7 +56,7 @@
 		 	vec3 vR = normalize(reflect(-vL, vNormal)); 
 		 	float omega = max(dot(vV, vR), 0.0); 
 		 	//vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,5.0), matSpec.a); 
-		 	vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega, 30.0), matSpec.a); 
+		 	vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,20.0), matSpec.a); 
 			
 		 	gl_FragColor = clamp(ambient + diffuse + specular, 0.0, 1.0); 
 		 	//gl_FragColor = clamp(diffuse + ambient, 0.0, 1.0); 
@@ -70,7 +66,7 @@
 	<script type="text/javascript" src="../libs/three.js"></script>
     <script type="text/javascript" src="../libs/examples/js/controls/OrbitControls.js"></script>
     <script type="text/javascript" src="../libs/examples/js/loaders/OBJLoader.js"></script>
-	<script type="text/javascript" src="AT05_waterAnimation.js"></script>
+	<script type="text/javascript" src="AT05_waterAnimation2.js"></script>
 	
 	<body onload="init();">
 		<div id="WebGL-output" ></div>

@@ -1,7 +1,7 @@
 var scene 			= null;
 var renderer		= null;
 var camera 			= null;
-var DirectionalLight		= null;
+var pointLight		= null;
 var orbitControls	= null;
 var clock;
 
@@ -40,7 +40,7 @@ function render() {
 	var delta = clock.getDelta();
     orbitControls.update(delta);
 
-    uniforms.contAnimation.value += 0.7;
+    uniforms.contAnimation.value += 1.0;
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(render);
@@ -60,20 +60,21 @@ function buildScene() {
 
 	camera.lookAt(new THREE.Vector3( 0.0, 0.0, 0.0) );
 	camera.updateProjectionMatrix();
-/*	
+	/*
 	var globalAxis = new THREE.AxisHelper(maxCoord*1.3);
 	scene.add( globalAxis );
-*/
-	DirectionalLight = new THREE.DirectionalLight(new THREE.Color(1.0, 1.0, 1.0));
-	DirectionalLight.distance = 0.0;
-	DirectionalLight.position.set(coordX * (-10.0), coordY * 10.0, 0.0);
-	scene.add(DirectionalLight);
+	*/
+	pointLight = new THREE.DirectionalLight(new THREE.Color(1.0, 1.0, 1.0));
+	pointLight.distance = 0.0;
+	// pointLight.position.set(box.max.x*10.0, box.max.y*10.0, box.max.z*10.0);
+	pointLight.position.set(coordX * (-10.0), coordY * 10.0, 0.0);
+	scene.add(pointLight);
 	
 	var i = 0.0;
 
 	uniforms = {
 		uCamPos	: 	{ type: "v3", value:camera.position},
-		uLPos	:	{ type: "v3", value:DirectionalLight.position},
+		uLPos	:	{ type: "v3", value:pointLight.position},
 		contAnimation    :   { type: "f", value: i }
 		};
 
