@@ -1,7 +1,7 @@
 var scene 			= null;
 var renderer		= null;
 var camera 			= null;
-var pointLight		= null;
+var DirectionalLight		= null;
 var orbitControls	= null;
 var clock;
 
@@ -13,18 +13,16 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer();
 
-	renderer.setClearColor(new THREE.Color(0.0, 0.0, 0.0));
+	renderer.setClearColor(new THREE.Color(1.0, 1.0, 1.0));
 	renderer.setSize(window.innerWidth*0.7, window.innerHeight*0.7);
 
 	document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
 	camera = new THREE.PerspectiveCamera(60.0, 1.0, 0.1, 100.0);
 	
-	// Controle de Camera Orbital
 	orbitControls = new THREE.OrbitControls(camera);
 	orbitControls.autoRotate = false;
 
-	// Adiciona luz ambiente
 	var ambientLight = new THREE.AmbientLight(new THREE.Color(1.0, 1.0, 1.0));
 	scene.add(ambientLight);
 
@@ -34,21 +32,35 @@ function init() {
 }
 
 function loadMeshes() {
+<<<<<<< HEAD
+	var loader = new THREE.OBJLoader();
+	buildScene();
+=======
 	// Load Mesh
 	var loader = new THREE.OBJLoader();
 	loader.load('../Assets/Models/bunny.obj', buildScene);		
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 }
 
 function render() {
 	var delta = clock.getDelta();
     orbitControls.update(delta);
 
-    uniforms.t.value += 0.7;
+    uniforms.contAnimation.value += 0.7;
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(render);
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+function buildScene() {  
+
+	var coordX = 250.0, coordY = 248.0, coordZ = 194.0;	
+	var maxCoord = Math.max(coordX, coordY, coordZ);
+=======
+=======
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 function buildScene(loadedMesh) {  
 	/* max.x: 250 max.y 247.5642547607422 max.z 193.65597534179688 min.x: -250 min.y -247.5642547607422 min.z -193.65597534179688 */
 	// Bounding Box	
@@ -57,6 +69,7 @@ function buildScene(loadedMesh) {
 	console.log("max.x: " + box.max.x + " max.y " + box.max.y + " max.z " + box.max.z + " min.x: " + box.min.x + " min.y " + box.min.y + " min.z " + box.min.z);
 	// Adjust Camera Position and LookAt	
 	var maxCoord = Math.max(box.max.x,box.max.y,box.max.z);
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 	
 	camera.position.x 	= 
 	camera.position.y 	= 
@@ -65,59 +78,32 @@ function buildScene(loadedMesh) {
 												maxCoord*5, 
 												maxCoord*5).length();
 
-	camera.lookAt(new THREE.Vector3(	(box.max.x + box.min.x)/2.0,
-										(box.max.y + box.min.y)/2.0,
-										(box.max.z + box.min.z)/2.0));
+	camera.lookAt(new THREE.Vector3( 0.0, 0.0, 0.0) );
 	camera.updateProjectionMatrix();
-	
-	// Global Axis
+/*	
 	var globalAxis = new THREE.AxisHelper(maxCoord*1.3);
 	scene.add( globalAxis );
-
-	//Add point light Source
-	pointLight = new THREE.PointLight(new THREE.Color(1.0, 1.0, 1.0));
-	pointLight.distance = 0.0;
-	pointLight.position.set(box.max.x*10.0, box.max.y*10.0, box.max.z*10.0);
-	scene.add(pointLight);
+*/
+	DirectionalLight = new THREE.DirectionalLight(new THREE.Color(1.0, 1.0, 1.0));
+	DirectionalLight.distance = 0.0;
+	DirectionalLight.position.set(coordX * (-10.0), coordY * 10.0, 0.0);
+	scene.add(DirectionalLight);
 	
 	var i = 0.0;
 
 	uniforms = {
 		uCamPos	: 	{ type: "v3", value:camera.position},
-		uLPos	:	{ type: "v3", value:pointLight.position},
-		t    :   { type: "f", value: i }
-		//texture: { type: "t", value: THREE.ImageUtils.loadTexture('./box.png') }
+		uLPos	:	{ type: "v3", value:DirectionalLight.position},
+		contAnimation    :   { type: "f", value: i }
 		};
-	
-	var matShader = new THREE.ShaderMaterial( {
-			uniforms: uniforms,
-			vertexShader: document.getElementById( 'phong-vs' ).textContent,
-			fragmentShader: document.getElementById( 'phong-fs' ).textContent
-			} );
-	
-/*	
-	loadedMesh.traverse(function (child) {	
-		if (child instanceof THREE.Mesh) {
-			child.material = matShader;
-			if ( (child.geometry.attributes.normal != undefined) ) {
-				child.geometry.computeFaceNormals();
-				child.geometry.computeVertexNormals();
-				child.geometry.normalsNeedUpdate = true;
-				}
-			}
-		});
-	
-	scene.add(loadedMesh);
-*/
-	// Ground
-	//var groundGeom = new THREE.PlaneBufferGeometry(maxCoord*25, maxCoord*25, 50, 50);
-	var groundGeom = new THREE.PlaneGeometry(maxCoord * 3, maxCoord * 3, 300, 300);
-	groundGeom.computeFaceNormals();
-	groundGeom.computeVertexNormals();
-	groundGeom.normalsNeedUpdate = true;
-	groundGeom.rotateX(-Math.PI / 2.0);
 
-	var matGround = new THREE.ShaderMaterial( {
+	var planGeo = new THREE.PlaneGeometry(maxCoord * 3, maxCoord * 3, 300, 300);
+	planGeo.computeFaceNormals();
+	planGeo.computeVertexNormals();
+	planGeo.normalsNeedUpdate = true;
+	planGeo.rotateX(-Math.PI / 2.0);
+
+	var matPlan = new THREE.ShaderMaterial( {
 		uniforms: uniforms,
 		vertexShader: document.getElementById( 'phong-vs' ).textContent,
 		fragmentShader: document.getElementById( 'phong-fs' ).textContent,
@@ -125,16 +111,8 @@ function buildScene(loadedMesh) {
 		shading: THREE.FlatShading
 	} );
 
-	var groundMesh = new THREE.Mesh(groundGeom, matGround);
+	var groundMesh = new THREE.Mesh(planGeo, matPlan);
 	scene.add(groundMesh);
 
-/*	
-	var groundMesh = new THREE.Mesh(groundGeom, new THREE.MeshBasicMaterial({color: 0x550055}));
-	groundMesh.material.side 	= THREE.DoubleSide;
-	groundMesh.material.shading	= THREE.FlatShading;
-	groundMesh.rotation.x = -Math.PI / 2;
-	groundMesh.position.y = 5;//box.min.y*2.0;
-	scene.add(groundMesh);
-*/
 	render();
 }
