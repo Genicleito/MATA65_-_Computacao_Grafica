@@ -53,11 +53,14 @@ function render() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function buildScene() {  
 
 	var coordX = 250.0, coordY = 248.0, coordZ = 194.0;	
 	var maxCoord = Math.max(coordX, coordY, coordZ);
 =======
+=======
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 function buildScene(loadedMesh) {  
 	/* max.x: 250 max.y 247.5642547607422 max.z 193.65597534179688 min.x: -250 min.y -247.5642547607422 min.z -193.65597534179688 */
 	// Bounding Box	
