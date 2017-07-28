@@ -9,6 +9,67 @@
 		<a href="AT05_waterAnimation2.html">Mar agitado</a>
 		<a href="AT05_waterAnimation3.html">Mar muito agitado</a>
 	</head>
+<<<<<<< HEAD
+=======
+	
+	<script id="noLight-vs" type="x-shader/x-vertex">
+		void main(void) {
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+		}
+	</script>
+	
+	<script id="noLight-fs" type="x-shader/x-fragment">
+		precision mediump float;
+		void main(void) {	
+			gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+		}
+	</script>
+
+	<script id="gouraud-vs" type="x-shader/x-vertex">		
+		 uniform vec3 uLPos; 
+			
+		 varying vec4 vColor; 
+			
+		 void main(void) { 
+		 	vec4 lColor		= vec4(1.0, 1.0, 1.0, 1.0); 
+		 	vec4 matAmb		= vec4(0.2, 0.2, 0.2, 1.0); 
+		 	vec4 matDif 	= vec4(1.0, 0.0, 0.0, 1.0); 
+		 	vec4 matSpec	= vec4(0.0, 1.0, 1.0, 1.0); 
+			
+		 	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );  
+			
+		 	vec3 vPosW = (modelMatrix * vec4(position, 1.0)).xyz; 
+			
+		 	vec3 vNormal = normalize(normalMatrix * normal); 
+			
+		 	vec4 ambient = vec4(lColor.rgb * matAmb.rgb, matAmb.a); 
+		
+		 	vec3 vL = normalize(uLPos - vPosW); 
+		 	float teta = max(dot(vL, vNormal), 0.0); 
+					
+		 	vec4 diffuse = vec4(lColor.rgb * matDif.rgb * teta, matDif.a); 
+	
+		 	vec3 vV = normalize(cameraPosition - vPosW); 
+		 	vec3 vR = normalize(reflect(-vL, vNormal)); 
+		 	float omega = max(dot(vV, vR), 0.0); 
+		 	vec4 specular = vec4(lColor.rgb * matSpec.rgb * pow(omega,200.0), matSpec.a); 
+			
+		 	vColor = clamp(diffuse + specular, 0.0, 1.0); 
+		 } 
+
+
+	</script>
+	
+	<script id="gouraud-fs" type="x-shader/x-fragment">
+		precision mediump float;
+		
+		varying vec4 vColor; 	
+		
+		void main(void) {
+			gl_FragColor = vColor;
+			} 	
+	</script>
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 
 	<script id="phong-vs" type="x-shader/x-vertex">		
 		varying vec3 vNormal; 
@@ -22,12 +83,28 @@
 
 			novoPosition = position;	//2 * 3^2 == (2 * 3)^2
 
+<<<<<<< HEAD
 			novoPosition.y = 50.0/2.0 * pow(sin((position.x + contAnimation)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.x + contAnimation)/100.0 * 3.14), 2.0);		//	1/2 * sin (x)^4 + 1/3 * sin(x)^2
 			novoPosition.y += 50.0/2.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 8.0)  + 50.0/3.0 * pow(sin((position.z + contAnimation)/200.0 * 3.14), 4.0);
 			novoPosition.z += 50.0/2.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.x - contAnimation/2.0)/100.0 * 3.14), 2.0);
 			novoPosition.x += 50.0/2.0 * pow(sin((position.y + contAnimation/4.0)/100.0 * 3.14), 4.0)  + 50.0/3.0 * pow(sin((position.y + contAnimation/4.0)/100.0 * 3.14), 2.0);
 
 			novoPosition.y /= 4.0;
+=======
+			novoPosition.y = 50.0/2.0 * pow(sin((position.x + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.x + t)/100.0 * 3.14159265359), 2.0);		//	1/2 * sin (x)^4 + 1/3 * sin(x)^2
+			novoPosition.y += 50.0/2.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 2.0);
+/*			novoPosition.y += 50.0/2.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 2.0);
+			novoPosition.y += 50.0/2.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 2.0);
+			novoPosition.y += 50.0/2.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.z + t)/100.0 * 3.14159265359), 2.0);*/
+			//novoPosition.z += 50.0/2.0 * pow(sin((position.x - t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.x - t)/100.0 * 3.14159265359), 2.0);
+			novoPosition.x += 50.0/2.0 * pow(sin((position.y + t)/100.0 * 3.14159265359), 4.0)  + 50.0/3.0 * pow(sin((position.y + t)/100.0 * 3.14159265359), 2.0);
+			//novoPosition.x += (t * 50) % 750;
+			//novoPosition.y = 1.0/2.0 * pow(sin(position.x), 6.0) * 50.0 + 1.0/2.0 * pow(sin(position.x), 2.0) * 50.0;
+			// for (float i = 0.0; i < 5.0; i += 1.0) {
+			// 	novoPosition.y += (5.0 - i) * pow(abs(sin((position.x - 40.0*i))), 20.0);
+			// }
+			 //novoPosition.y /= 7.0;
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 		
 			gl_Position = projectionMatrix * modelViewMatrix * vec4( novoPosition, 1.0 );
 			} 
@@ -46,8 +123,13 @@
 		void main(void) {
 		 	vec4 lColor		= vec4(1.0, 1.0, 1.0, 1.0); 
 		 	vec4 matAmb		= vec4(0.2, 0.2, 0.2, 1.0); 
+<<<<<<< HEAD
 		 	vec4 matDif 	= vec4(0.03, 0.04, 0.6, 1.0); 
 		 	vec4 matSpec	= vec4(0.8, 0.8, 0.0, 1.0);
+=======
+		 	vec4 matDif 	= vec4(0.0, 0.3, 0.95, 1.0); 
+		 	vec4 matSpec	= vec4(0.5, 0.5, 0.5, 1.0); 
+>>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 		 	
 		 	vec4 ambient = vec4(lColor.rgb * matAmb.rgb, matAmb.a); 
 		
