@@ -32,14 +32,8 @@ function init() {
 }
 
 function loadMeshes() {
-<<<<<<< HEAD
 	var loader = new THREE.OBJLoader();
 	buildScene();
-=======
-	// Load Mesh
-	var loader = new THREE.OBJLoader();
-	loader.load('../Assets/Models/bunny.obj', buildScene);		
->>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 }
 
 function render() {
@@ -52,24 +46,10 @@ function render() {
 	requestAnimationFrame(render);
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 function buildScene() {  
 
 	var coordX = 250.0, coordY = 248.0, coordZ = 194.0;	
 	var maxCoord = Math.max(coordX, coordY, coordZ);
-=======
-=======
->>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
-function buildScene(loadedMesh) {  
-	/* max.x: 250 max.y 247.5642547607422 max.z 193.65597534179688 min.x: -250 min.y -247.5642547607422 min.z -193.65597534179688 */
-	// Bounding Box	
-	var box = new THREE.Box3();
-	box.setFromObject(loadedMesh);	
-	console.log("max.x: " + box.max.x + " max.y " + box.max.y + " max.z " + box.max.z + " min.x: " + box.min.x + " min.y " + box.min.y + " min.z " + box.min.z);
-	// Adjust Camera Position and LookAt	
-	var maxCoord = Math.max(box.max.x,box.max.y,box.max.z);
->>>>>>> a4eec7c57b6edb08cb6993db0642790315220dac
 	
 	camera.position.x 	= 
 	camera.position.y 	= 

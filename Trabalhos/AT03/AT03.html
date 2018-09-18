@@ -9,24 +9,21 @@
         </style>
         </head>
         <body>
-       
-
-       
-               
+ 
         </body>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.js"></script>
+        <script type="text/javascript" src="../libs/three.js"></script>
        
-
 <script>
 
     var scene, camera, renderer;
-    var geometry,  mesh;
+    var geometry, mesh;
     var torusgemetry,torusmesh;
     var ellipsoidgeometry,ellipsoidmesh;
 
     init();
     animate();
-    function sphere () {
+
+    function esfera () {
         var latitudeBands=20,longitudeBands=20,radius=200;
         for (var latNumber=0; latNumber <= latitudeBands; latNumber++)
             {
@@ -47,8 +44,6 @@
                     geometry.vertices.push(new THREE.Vector3( x,y,z));
                    
                 }
-           
-       
         }
         for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
           for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
@@ -78,34 +73,29 @@
                     var cosPhi = Math.cos(phi);
                    
 
-                    var x = (radiusouter+radiusinner*cosPhi)*cosTheta;
-                    var y = (radiusouter+radiusinner*cosPhi)*sinTheta;
-                    var z = radiusinner*sinPhi ;
-                    torusgemetry.vertices.push(new THREE.Vector3( x*30,y*30,z*30));
+                    var x = (radiusouter + radiusinner * cosPhi) * cosTheta;
+                    var y = (radiusouter + radiusinner * cosPhi) * sinTheta;
+                    var z = radiusinner * sinPhi ;
+                    torusgemetry.vertices.push(new THREE.Vector3( x * 30, y * 30, z * 30));
 
                     }
-
-           
-       
         }
        
         for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
           for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
-        var first = (latNumber * (longitudeBands + 1)) + longNumber;
-        var second = first + longitudeBands + 1;
-        torusgemetry.faces.push(new THREE.Face3(first,second,first+1));
-       
-
-        torusgemetry.faces.push(new THREE.Face3(second,second+1,first+1));
-       
+	        var first = (latNumber * (longitudeBands + 1)) + longNumber;
+	        var second = first + longitudeBands + 1;
+	        torusgemetry.faces.push(new THREE.Face3(first, second,first+1));
+	        torusgemetry.faces.push(new THREE.Face3(second, second+1,first+1));
           }
         }
     }
+
     function ellipsoid () {
-        var latitudeBands=30,longitudeBands=20,a=6,b=6,c=6,size=40, n1=2, n2=2;
-        for (var latNumber=0; latNumber <= latitudeBands; latNumber++)
+        var latitudeBands = 30,longitudeBands = 20, a = 6, b = 6, c = 6, size = 40, n1 = 2, n2 = 2;
+        for (var latNumber = 0; latNumber <= latitudeBands; latNumber++)
             {
-                var theta = (latNumber *      Math.PI *2/ latitudeBands);
+                var theta = (latNumber * Math.PI * 2 / latitudeBands);
                 //var sinTheta = (1 - Math.sin(n2 * theta))/n2;
                 var sinTheta = Math.pow(Math.sin(theta), n2);
                 //var cosTheta = (1 + Math.cos(n2 * theta))/n2;
@@ -120,25 +110,20 @@
                     var sinPhi = Math.pow(Math.sin(phi), n1);
                     var cosPhi = Math.pow(Math.cos(phi), n1);
                    
-
                     var x = a * cosPhi * cosTheta ;
                     var y = b * cosPhi * sinTheta;
                     var z = c * sinPhi;
-                    ellipsoidgeometry.vertices.push(new THREE.Vector3( x*size,y*size,z*size));
-                   
+                    ellipsoidgeometry.vertices.push(new THREE.Vector3( x*size, y*size, z*size));
                 }
-           
-       
         }
+
         for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
           for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
-        var first = (latNumber * (longitudeBands + 1)) + longNumber;
-        var second = first + longitudeBands + 1;
-        ellipsoidgeometry.faces.push(new THREE.Face3(first,second,first+1));
-       
-
-        ellipsoidgeometry.faces.push(new THREE.Face3(second,second+1,first+1));
-       
+	        var first = (latNumber * (longitudeBands + 1)) + longNumber;
+	        var second = first + longitudeBands + 1;
+	        ellipsoidgeometry.faces.push(new THREE.Face3(first,second,first+1));
+	       
+	        ellipsoidgeometry.faces.push(new THREE.Face3(second,second+1,first+1));
           }
         }
     }
@@ -149,31 +134,27 @@
        
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 1000;
-        ///////////////////////////////////////////////////////////
-        //////////////////////////////sphere/////////////////
        
         geometry = new THREE.Geometry( );
-        sphere();
-        var greenmaterial =  new THREE.MeshBasicMaterial( { color: 0x66ff33, wireframe: true } );
-        mesh = new THREE.Mesh( geometry, greenmaterial );
+        esfera();
+        var greenMaterial = new THREE.MeshBasicMaterial( { color: 0x66ff33, wireframe: true } );
+        mesh = new THREE.Mesh( geometry, greenMaterial );
         scene.add( mesh );
-        ///////////////////////////sphere///////////////////////////////////////
-        ///////////////////////////torus//////////////////////////
-        torusgemetry =new THREE.Geometry();
+
+        torusgemetry = new THREE.Geometry();
         torus();
-        var bluematerial =  new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true } );
-        torusmesh = new THREE.Mesh(torusgemetry,bluematerial);
+        var blueMaterial = new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true } );
+        torusmesh = new THREE.Mesh(torusgemetry, blueMaterial);
         scene.add(torusmesh);
-        ///////////////////////////////////////////////////////
-        ///////////////////////////ellipsoid//////////////////////////
-        ellipsoidgeometry =new THREE.Geometry();
+
+        ellipsoidgeometry = new THREE.Geometry();
         ellipsoid();
-        var redmaterial =  new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-        ellipsoidmesh = new THREE.Mesh(ellipsoidgeometry,redmaterial);
+        var redMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+        ellipsoidmesh = new THREE.Mesh(ellipsoidgeometry, redMaterial);
         ellipsoidmesh.add(new THREE.AxisHelper(300));
 
         scene.add(ellipsoidmesh);
-        ///////////////////////////////////////////////////////
+
         renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -184,16 +165,16 @@
     function animate() {
 
         requestAnimationFrame( animate );
-        torusmesh.position.x= 1000;
+        torusmesh.position.x = 1000;
         mesh.rotation.x += 0.01;
         mesh.rotation.y += 0.02;
 
         torusmesh.rotation.x += 0.02;
         torusmesh.rotation.y += 0.01;
 
-        ellipsoidmesh.position.x=-1000;
-        ellipsoidmesh.rotation.x-=0.01;
-        ellipsoidmesh.rotation.y -=0.02;
+        ellipsoidmesh.position.x = -1000;
+        ellipsoidmesh.rotation.x -= 0.01;
+        ellipsoidmesh.rotation.y -= 0.02;
 
 
         renderer.render( scene, camera );
